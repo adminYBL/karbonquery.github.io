@@ -3,23 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacts Viewer</title>
+    <title>Karbon Data Display</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
+            margin: 20px;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
         }
     </style>
 </head>
 <body>
-    <h1>Karbon Query Directory</h1>
-    <button onclick="window.location.href = 'http://127.0.0.1:5000/contacts';">View Contacts</button>
-    <button onclick="window.location.href = 'http://127.0.0.1:5000/users';">View Users</button>
+    <h1>Contacts and Users</h1>
+    
+    <h2>Contacts</h2>
+    <table id="contactsTable">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email Address</th>
+                <th>Preferred Name</th>
+                <th>Contact Type</th>
+                <th>Last Modified Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data rows will be inserted here -->
+        </tbody>
+    </table>
+    
+    <h2>Users</h2>
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email Address</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data rows will be inserted here -->
+        </tbody>
+    </table>
 
+    <script>
+        const KARBON_API_URL_CONTACTS = "https://api.karbonhq.com/v3/Contacts";
+        const KARBON_API_URL_USERS = "https://api.karbonhq.com/v3/Users";
+        const KARBON_API_HEADERS = {
+            'Accept': 'application/json',
+            'AccessKey': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJLYXJib25IUSIsInJlZyI6InVzMiIsInRhayI6IjgxOUZEMUU4LTcxMTAtNDEyNC1BRTA3LUNEQzVDNzVGQkJFMiIsImlhdCI6MTcxODI5MTk2Ni4wfQ.bWrn6D02shKYPYMy9YLXXRcfhvropcRHlPbZsEPEfLQ',
+            'Authorization': 'Bearer b81694a5-dae9-4593-8c06-a672d5ecd640'
+        };
+
+        async function fetchData(url, headers, tableId, dataMapping) {
+            try {
+                const response = await fetch(url, { headers });
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                const tableBody = document.querySelector(`${tableId} tbody`);
+
+                data.value.forEach(item => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = dataMapping(item);
+                    
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error(`Error fetching data from ${url}:`, error);
+            }
+        }
+
+        // Function to map contact data to table row
+        function mapContactData(contact) {
+            return `
+                <td>${contact.FullName || 'N/A'}</td>
+                <td>${contact.EmailAddress || 'N/A'}</td>
+                <td>${contact.PreferredName || 'N/A'}</td>
+                <td>${contact.ContactType || 'N/A'}</td>
+                <td>${new Date(contact.LastModifiedDateTime).toLocaleString() || 'N/A'}</td>
+            `;
+        }
+
+        // Function to map user data to table row
+        function mapUserData(user) {
+            return `
+                <td>${user.FullName || 'N/A'}</td>
+                <td>${user.EmailAddress || 'N/A'}</td>
+                <td>${user.Role || 'N/A'}</td>
+            `;
+        }
+
+        // Fetch and display contacts and users
+        fetchData(KARBON_API_URL_CONTACTS, KARBON_API_HEADERS, '#contactsTable', mapContactData);
+        fetchData(KARBON_API_URL_USERS, KARBON_API_HEADERS, '#usersTable', mapUserData);
+    </script>
 </body>
 </html>
