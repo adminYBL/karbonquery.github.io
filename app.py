@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, send_from_directory
 import requests
 from flask_cors import CORS
-from netlify_lambda import lambda_handler
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -11,8 +10,8 @@ KARBON_API_URL_CONTACTS = "https://api.karbonhq.com/v3/Contacts"
 KARBON_API_URL_USERS = "https://api.karbonhq.com/v3/Users"
 KARBON_API_HEADERS = {
     'Accept': 'application/json',
-    'AccessKey': 'your-access-key-here',
-    'Authorization': 'Bearer your-bearer-token-here'
+    'AccessKey': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJLYXJib25IUSIsInJlZyI6InVzMiIsInRhayI6IjgxOUZEMUU4LTcxMTAtNDEyNC1BRTA3LUNEQzVDNzVGQkJFMiIsImlhdCI6MTcxODI5MTk2Ni4wfQ.bWrn6D02shKYPYMy9YLXXRcfhvropcRHlPbZsEPEfLQ',
+    'Authorization': 'Bearer b81694a5-dae9-4593-8c06-a672d5ecd640'
 }
 
 @app.route('/')
@@ -41,4 +40,9 @@ def get_users():
     except requests.exceptions.HTTPError as http_err:
         return jsonify({'error': f'HTTP error: {http_err}'}), 400
     except requests.exceptions.RequestException as req_err:
-        return jsonify({'error': f'Reques
+        return jsonify({'error': f'Request error: {req_err}'}), 500
+    except Exception as err:
+        return jsonify({'error': f'Unexpected error: {err}'}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
