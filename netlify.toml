@@ -1,0 +1,6 @@
+[build]
+  functions = "functions"
+  command = "echo 'No build command needed'"
+
+[build.environment]
+  PYTHON_VERSION = "3.9"
