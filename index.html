@@ -24,11 +24,25 @@
         th {
             background-color: #f4f4f4;
         }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h1>Contacts and Users</h1>
-    
+    <h1>Karbon Data Display</h1>
+
+    <div class="button-container">
+        <button id="fetchContacts">Fetch Contacts</button>
+        <button id="fetchUsers">Fetch Users</button>
+    </div>
+
     <h2>Contacts</h2>
     <table id="contactsTable">
         <thead>
@@ -44,7 +58,7 @@
             <!-- Data rows will be inserted here -->
         </tbody>
     </table>
-    
+
     <h2>Users</h2>
     <table id="usersTable">
         <thead>
@@ -60,6 +74,8 @@
     </table>
 
     <script>
+        const apiUrl = 'https://your-flask-app.vercel.app'; // Replace with your Vercel Flask app URL
+
         async function fetchData(url, tableId, dataMapping) {
             try {
                 const response = await fetch(url);
@@ -67,12 +83,11 @@
                 const data = await response.json();
 
                 const tableBody = document.querySelector(`${tableId} tbody`);
+                tableBody.innerHTML = ''; // Clear previous data
 
                 data.value.forEach(item => {
                     const row = document.createElement('tr');
-
                     row.innerHTML = dataMapping(item);
-                    
                     tableBody.appendChild(row);
                 });
             } catch (error) {
@@ -80,7 +95,6 @@
             }
         }
 
-        // Function to map contact data to table row
         function mapContactData(contact) {
             return `
                 <td>${contact.FullName || 'N/A'}</td>
@@ -91,7 +105,6 @@
             `;
         }
 
-        // Function to map user data to table row
         function mapUserData(user) {
             return `
                 <td>${user.FullName || 'N/A'}</td>
@@ -100,9 +113,13 @@
             `;
         }
 
-        // Fetch and display contacts and users from Flask API
-        fetchData('/contacts', '#contactsTable', mapContactData);
-        fetchData('/users', '#usersTable', mapUserData);
+        document.getElementById('fetchContacts').addEventListener('click', () => {
+            fetchData(`${apiUrl}/contacts`, '#contactsTable', mapContactData);
+        });
+
+        document.getElementById('fetchUsers').addEventListener('click', () => {
+            fetchData(`${apiUrl}/users`, '#usersTable', mapUserData);
+        });
     </script>
 </body>
 </html>
