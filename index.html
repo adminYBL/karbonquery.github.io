@@ -60,17 +60,9 @@
     </table>
 
     <script>
-        const KARBON_API_URL_CONTACTS = "https://api.karbonhq.com/v3/Contacts";
-        const KARBON_API_URL_USERS = "https://api.karbonhq.com/v3/Users";
-        const KARBON_API_HEADERS = {
-            'Accept': 'application/json',
-            'AccessKey': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJLYXJib25IUSIsInJlZyI6InVzMiIsInRhayI6IjgxOUZEMUU4LTcxMTAtNDEyNC1BRTA3LUNEQzVDNzVGQkJFMiIsImlhdCI6MTcxODI5MTk2Ni4wfQ.bWrn6D02shKYPYMy9YLXXRcfhvropcRHlPbZsEPEfLQ',
-            'Authorization': 'Bearer b81694a5-dae9-4593-8c06-a672d5ecd640'
-        };
-
-        async function fetchData(url, headers, tableId, dataMapping) {
+        async function fetchData(url, tableId, dataMapping) {
             try {
-                const response = await fetch(url, { headers });
+                const response = await fetch(url);
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
 
@@ -108,9 +100,9 @@
             `;
         }
 
-        // Fetch and display contacts and users
-        fetchData(KARBON_API_URL_CONTACTS, KARBON_API_HEADERS, '#contactsTable', mapContactData);
-        fetchData(KARBON_API_URL_USERS, KARBON_API_HEADERS, '#usersTable', mapUserData);
+        // Fetch and display contacts and users from Flask API
+        fetchData('/contacts', '#contactsTable', mapContactData);
+        fetchData('/users', '#usersTable', mapUserData);
     </script>
 </body>
 </html>
