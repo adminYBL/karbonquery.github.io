@@ -41,10 +41,4 @@ def get_users():
     except requests.exceptions.HTTPError as http_err:
         return jsonify({'error': f'HTTP error: {http_err}'}), 400
     except requests.exceptions.RequestException as req_err:
-        return jsonify({'error': f'Request error: {req_err}'}), 500
-    except Exception as err:
-        return jsonify({'error': f'Unexpected error: {err}'}), 500
-
-def handler(event, context):
-    with app.app_context():
-        return lambda_handler(event, context, app)
+        return jsonify({'error': f'Reques
