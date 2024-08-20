@@ -2,7 +2,7 @@ from flask import Flask, jsonify, send_from_directory
 import requests
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)  # Enable CORS for all routes
 
 # External API details
@@ -10,13 +10,13 @@ KARBON_API_URL_CONTACTS = "https://api.karbonhq.com/v3/Contacts"
 KARBON_API_URL_USERS = "https://api.karbonhq.com/v3/Users"
 KARBON_API_HEADERS = {
     'Accept': 'application/json',
-    'AccessKey': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJLYXJib25IUSIsInJlZyI6InVzMiIsInRhayI6IjgxOUZEMUU4LTcxMTAtNDEyNC1BRTA3LUNEQzVDNzVGQkJFMiIsImlhdCI6MTcxODI5MTk2Ni4wfQ.bWrn6D02shKYPYMy9YLXXRcfhvropcRHlPbZsEPEfLQ',
-    'Authorization': 'Bearer b81694a5-dae9-4593-8c06-a672d5ecd640'
+    'AccessKey': 'YOUR_ACCESS_KEY',
+    'Authorization': 'Bearer YOUR_BEARER_TOKEN'
 }
 
 @app.route('/')
 def serve_index():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory('static', 'index.html')
 
 @app.route('/contacts', methods=['GET'])
 def get_contacts():
